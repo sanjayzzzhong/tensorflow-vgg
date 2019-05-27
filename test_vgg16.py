@@ -1,6 +1,13 @@
+# -*- coding: UTF-8 -*-
+'''
+@Author: sanjayzhong
+@Github: https://github.com/sanjayzzzhong
+@Date: 2019-05-27
+'''
 import numpy as np
 import tensorflow as tf
 
+# import vgg16
 import vgg16
 import utils
 
@@ -10,14 +17,18 @@ img2 = utils.load_image("./test_data/puzzle.jpeg")
 batch1 = img1.reshape((1, 224, 224, 3))
 batch2 = img2.reshape((1, 224, 224, 3))
 
+# numpy.concatenate((a1, a2, ...), axis=0, out=None)
+# 按行拼接
 batch = np.concatenate((batch1, batch2), 0)
 
 # with tf.Session(config=tf.ConfigProto(gpu_options=(tf.GPUOptions(per_process_gpu_memory_fraction=0.7)))) as sess:
-with tf.device('/cpu:0'):
+with tf.device('/gpu:0'):
     with tf.Session() as sess:
+        
         images = tf.placeholder("float", [2, 224, 224, 3])
         feed_dict = {images: batch}
 
+        # 实例话vgg16对象
         vgg = vgg16.Vgg16()
         with tf.name_scope("content_vgg"):
             vgg.build(images)
